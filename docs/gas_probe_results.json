@@ -1,0 +1,46 @@
+{
+  "chain 11155111": {
+    "network": "chain 11155111",
+    "endpoint": "https://ethereum-sepolia-rpc.publicnode.com",
+    "block": 11907528,
+    "from": "0x0000000000000000000000000000000000000001",
+    "estimates": {
+      "0_slots": 210512,
+      "1_slot": 321389,
+      "2_slots": 432369
+    },
+    "per_new_slot": 110877,
+    "second_slot": 110980,
+    "measured_at": "2026-10-13T17:18:14Z",
+    "probes": {
+      "0_slots": "0x600160005050",
+      "1_slot": "0x600160005500",
+      "2_slots": "0x6001600055600160015500"
+    },
+    "note": "eth_estimateGas pinned to the block above (same requests as probe_rpc in scripts/gas_probe.py). Rerun with: python scripts/gas_probe.py"
+  },
+  "local eth-tester / py-evm (the EVM used by tests/test_contract.py)": {
+    "network": "local eth-tester / py-evm (the EVM used by tests/test_contract.py)",
+    "endpoint": "in-memory",
+    "block": 3,
+    "from": "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+    "gas_used": {
+      "0_slots": 53096,
+      "1_slot": 75180,
+      "2_slots": 97366
+    },
+    "estimates": {
+      "0_slots": 67706,
+      "1_slot": 82316,
+      "2_slots": 111641
+    },
+    "per_new_slot": 22084,
+    "second_slot": 22186,
+    "measured_at": "2026-10-13T17:19:19Z",
+    "probes": {
+      "0_slots": "0x600160005050",
+      "1_slot": "0x600160005500",
+      "2_slots": "0x6001600055600160015500"
+    }
+  }
+}

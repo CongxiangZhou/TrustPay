@@ -207,15 +207,21 @@ Gas per action (local EVM, `pytest -s tests/test_contract.py -k gas`):
 | expireDispute | ~48,500 |
 
 **Why `createEscrow` costs more on Sepolia (~861k–1,027k gas, sent directly to the
-contract) than locally (~209k–235k).** Sepolia currently charges far more for *creating
-new state* than the EVM rules used by the local tests. Measured with `eth_estimateGas` on
-Sepolia (block 11,907,491) for a contract-creation transaction whose init code writes
-0, 1 or 2 new storage slots (`0x600160005050`, `0x600160005500`, `0x6001600055600160015500`):
-210,512 / 321,389 / 432,369 gas, i.e. **~110,900 gas per new storage slot** versus 22,100
-under the local rules. `createEscrow` writes 7 new slots (3 struct slots, the title and
-one index entry each for buyer, seller and arbiter): 209,366 + 7 × (110,900 − 22,100) ≈
-831,000, close to the measured ~861,000. `markDelivered`, which only updates an existing
-slot, costs the same on both (28,922 vs 30,134).
+contract) than locally (~209k–235k).** `scripts/gas_probe.py` measures the cost of one new
+storage slot with three raw-bytecode contract creations that write 0, 1 or 2 new slots
+(no compiler involved; the bytecode is listed in the script). Results, saved in
+[`docs/gas_probe_results.json`](docs/gas_probe_results.json):
+
+| Network | 0 slots | 1 slot | 2 slots | Per new slot |
+|---|---|---|---|---|
+| Sepolia, `eth_estimateGas` at block 11,907,528 | 210,512 | 321,389 | 432,369 | **~110,900** |
+| Local EVM (eth-tester / py-evm), receipts | 53,096 | 75,180 | 97,366 | **~22,100** |
+
+`createEscrow` writes 7 new slots (3 struct slots, the title, and one index entry each for
+buyer, seller and arbiter), so 209,366 + 7 × (110,900 − 22,100) ≈ 831,000 gas — most of
+the ~861,000 measured on Sepolia. `markDelivered`, which only updates an existing slot,
+costs the same on both (28,922 vs 30,134). Reproduce with
+`python scripts/gas_probe.py` (Sepolia) and `python scripts/gas_probe.py --local`.
 
 ## 6. Project structure
 
@@ -234,6 +240,7 @@ TrustPay/
 │   ├── abi/TrustPay.abi.json       # contract ABI used by the frontend
 │   └── vendor/ethers-6.13.4.umd.min.js
 ├── scripts/compile.py              # compiles the contract with solc 0.8.31
+├── scripts/gas_probe.py            # measures the gas cost of a new storage slot (Sepolia vs local)
 ├── tests/
 │   ├── test_contract.py            # 57 smart-contract tests
 │   ├── test_backend.py             # 52 backend/API/verification tests
