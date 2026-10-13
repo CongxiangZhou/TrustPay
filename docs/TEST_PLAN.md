@@ -2,7 +2,7 @@
 
 Testing has two parts:
 
-1. **Automated tests** (108) — run on a local in-memory EVM and a Flask test client,
+1. **Automated tests** (109) — run on a local in-memory EVM and a Flask test client,
    plus a browser end-to-end test (`tests/e2e/run_e2e.py`, Ganache + Playwright).
 2. **Manual tests on Sepolia** — run through the web app with MetaMask; take a
    screenshot of each for the report.
@@ -14,13 +14,13 @@ pip install -r requirements-dev.txt
 pytest -v
 ```
 
-### Smart contract — `tests/test_contract.py` (56 tests)
+### Smart contract — `tests/test_contract.py` (57 tests)
 
 | Group | What is verified |
 |---|---|
 | Creation | All fields stored; ETH held by contract; stats updated; `EscrowCreated` event; user index for buyer/seller/arbiter |
 | Invalid input (13 cases) | zero amount, zero seller/arbiter, buyer = seller, buyer = arbiter, seller = arbiter, past deadline, deadline < 5 min, deadline > 365 days, review period < 5 min or > 30 days, empty title, title > 64 bytes, plain ETH transfer, unknown id |
-| Happy paths | deliver → release; release without delivery mark; seller refund; buyer refund after deadline |
+| Happy paths | deliver → release; release without delivery mark; seller refund before and after delivery; buyer refund after deadline |
 | Deadline rules | `claimRefund` blocked before deadline and after delivery |
 | Disputes (4 combos) | buyer/seller raises × arbiter pays seller/refunds buyer; funds frozen during dispute; `DisputeResolved` event |
 | Access control | every write function rejects every non-authorised role; only arbiter resolves; arbiter/outsider cannot dispute |
@@ -100,7 +100,7 @@ Fill the *Result* column with Pass/Fail when you run them.
 | 13 | Claim-refund before deadline (disabled) and after deadline (Refunded) | Validation via smart contract |
 | 14 | Dashboard (buyer and seller views) | Frontend UI |
 | 15 | History page | Transaction history |
-| 16 | Terminal output of `pytest -v` (108 passed) and the gas report | Testing & evaluation |
+| 16 | Terminal output of `pytest -v` (109 passed) and the gas report | Testing & evaluation |
 | 17 | Mobile view of any page (browser dev tools, ~390 px) | Usability |
 | 18 | *Claim payment* locked (countdown) and then claimed (T19) | Innovation — liveness |
 | 19 | Expired dispute refunded to buyer (T20) | Innovation — liveness |

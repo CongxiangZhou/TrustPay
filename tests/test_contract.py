@@ -177,6 +177,19 @@ def test_seller_refunds_buyer(w3, trustpay, accounts):
     assert trustpay.functions.getStats().call() == [1, 0, 0, ONE_ETH]
 
 
+def test_seller_refunds_buyer_after_delivery(w3, trustpay, accounts):
+    # Delivered -> refundBuyer: the seller can still cancel after marking delivery
+    id_, _ = create(w3, trustpay, accounts)
+    trustpay.functions.markDelivered(id_).transact({"from": accounts["seller"]})
+    assert status(trustpay, id_) == DELIVERED
+    buyer_before = balance(w3, accounts["buyer"])
+    trustpay.functions.refundBuyer(id_).transact({"from": accounts["seller"]})
+    assert status(trustpay, id_) == REFUNDED
+    assert balance(w3, accounts["buyer"]) - buyer_before == ONE_ETH
+    assert w3.eth.get_balance(trustpay.address) == 0
+    expect_revert("InvalidStatus(uint8)", trustpay.functions.claimPayment, id_, **{"from": accounts["seller"]})
+
+
 def test_buyer_claims_refund_after_deadline(w3, trustpay, accounts):
     id_, _ = create(w3, trustpay, accounts, deadline_offset=DAY)
     expect_revert("DeadlineNotReached(uint64)", trustpay.functions.claimRefund, id_, **{"from": accounts["buyer"]})

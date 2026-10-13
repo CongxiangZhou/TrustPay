@@ -23,6 +23,7 @@ buyer is refunded.
 | Deployment tx | [`0x3dfee67c…ea9ec1`](https://sepolia.etherscan.io/tx/0x3dfee67cbb4c11f54fcf10b24e22e9d6ffe2b0a41c69bf9778db4df467ea9ec1) — block 11,906,851 · 12,278,279 gas |
 | Compiler | solc 0.8.31, optimizer enabled (200 runs) |
 | Source verification | Verified on [Blockscout](https://eth-sepolia.blockscout.com/address/0x12864358FA87f5a1Eff6E9ac467645Bf1BcE8067?tab=contract) — metadata hash matches `contracts/TrustPay.sol` |
+| Source code | <https://github.com/CongxiangZhou/TrustPay> |
 
 Earlier deployments (superseded, kept for the gas comparison below):
 v2 before the late-dispute rule [`0xA96ABDa0…3Bb0`](https://sepolia.etherscan.io/address/0xA96ABDa0e0d75fAc52EED971BfAE1cB0EcDc3Bb0) ·
@@ -205,6 +206,17 @@ Gas per action (local EVM, `pytest -s tests/test_contract.py -k gas`):
 | raiseDispute (with review-period check) | ~31,000 |
 | expireDispute | ~48,500 |
 
+**Why `createEscrow` costs more on Sepolia (~861k–1,027k gas, sent directly to the
+contract) than locally (~209k–235k).** Sepolia currently charges far more for *creating
+new state* than the EVM rules used by the local tests. Measured with `eth_estimateGas` on
+Sepolia (block 11,907,491) for a contract-creation transaction whose init code writes
+0, 1 or 2 new storage slots (`0x600160005050`, `0x600160005500`, `0x6001600055600160015500`):
+210,512 / 321,389 / 432,369 gas, i.e. **~110,900 gas per new storage slot** versus 22,100
+under the local rules. `createEscrow` writes 7 new slots (3 struct slots, the title and
+one index entry each for buyer, seller and arbiter): 209,366 + 7 × (110,900 − 22,100) ≈
+831,000, close to the measured ~861,000. `markDelivered`, which only updates an existing
+slot, costs the same on both (28,922 vs 30,134).
+
 ## 6. Project structure
 
 ```
@@ -223,7 +235,7 @@ TrustPay/
 │   └── vendor/ethers-6.13.4.umd.min.js
 ├── scripts/compile.py              # compiles the contract with solc 0.8.31
 ├── tests/
-│   ├── test_contract.py            # 56 smart-contract tests
+│   ├── test_contract.py            # 57 smart-contract tests
 │   ├── test_backend.py             # 52 backend/API/verification tests
 │   ├── e2e/run_e2e.py              # browser end-to-end test (Ganache + Playwright)
 │   └── contracts/TestHelpers.sol   # attacker contracts used by tests only
@@ -262,7 +274,7 @@ a little Sepolia ETH for gas.
 
 ```bash
 pip install -r requirements-dev.txt
-pytest -v                      # 108 tests: contract + backend
+pytest -v                      # 109 tests: contract + backend
 pytest -s tests/test_contract.py -k gas   # print the gas report
 ```
 
