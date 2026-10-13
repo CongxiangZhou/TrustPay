@@ -6,8 +6,8 @@ Author: ZHOU Congxiang · Network: **Ethereum Sepolia testnet** (chain id `11155
 TrustPay lets two strangers trade safely online. The buyer locks ETH in a smart
 contract instead of paying the seller directly. The seller is paid only when the
 buyer confirms the deal; the buyer can reclaim the money if the seller never
-delivers; and if they disagree, a neutral arbiter they both chose decides.
-Built-in timeouts guarantee the money can never be stuck: if the buyer goes silent
+delivers; and if they disagree, a neutral arbiter named in the escrow decides.
+Built-in timeouts handle a silent party: if the buyer goes silent
 after delivery the seller can claim payment, and if the arbiter never decides the
 buyer is refunded.
 
@@ -129,8 +129,7 @@ createEscrow ─▶ Funded ──markDelivered (before deadline)──▶ Delive
 
 Every non-final state has a way out that does not depend on the other party:
 *Funded* → buyer refund after the deadline; *Delivered* → seller claim after the
-review period; *Disputed* → buyer refund after the arbiter window. **No escrow can be
-stuck forever.**
+review period; *Disputed* → buyer refund after the arbiter window.
 
 ### Functions
 
@@ -200,10 +199,9 @@ Gas per action (local EVM, `pytest -s tests/test_contract.py -k gas`):
 | createEscrow (repeat) | ~209,300 |
 | markDelivered | ~28,900 |
 | releaseFunds | ~70,700 |
-| raiseDispute | ~30,800 |
 | resolveDispute | ~68,300 |
 | claimPayment | ~48,500 |
-| raiseDispute (with review-period check) | ~31,000 |
+| raiseDispute | ~31,000 |
 | expireDispute | ~48,500 |
 
 **Why `createEscrow` costs more on Sepolia (~861k–1,027k gas, sent directly to the
