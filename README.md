@@ -247,7 +247,6 @@ TrustPay/
 ├── docs/DEPLOYMENT.md              # Remix → Sepolia → config → Render
 ├── docs/TEST_PLAN.md               # test cases + screenshot checklist
 ├── requirements.txt / requirements-dev.txt / Procfile
-├── start_server.bat                # Windows one-click: venv + install + run
 └── instance/trustpay.db            # created on first run
 ```
 
