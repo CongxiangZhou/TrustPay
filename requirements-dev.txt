@@ -1,0 +1,9 @@
+# Development & testing dependencies
+-r requirements.txt
+pytest==9.1.1
+web3==8.0.0
+# eth-tester without the [py-evm] extra: avoids a C++ build step on Windows
+eth-tester==0.14.0b1
+eth-hash[pycryptodome]
+py-evm==0.12.1b1
+py-solc-x==2.0.5

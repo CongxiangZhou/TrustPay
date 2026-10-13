@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="muted">Every escrow where your wallet is the buyer, seller or arbiter.</p>
+    </div>
+    <a class="btn btn--primary" href="{{ url_for('create') }}">+ New escrow</a>
+</div>
+
+<section class="stats" id="stats">
+    <div class="stat"><span class="stat__label">Total escrows</span><span class="stat__value" id="stat-count">—</span></div>
+    <div class="stat"><span class="stat__label">ETH locked now</span><span class="stat__value" id="stat-locked">—</span></div>
+    <div class="stat"><span class="stat__label">ETH released to sellers</span><span class="stat__value" id="stat-released">—</span></div>
+    <div class="stat"><span class="stat__label">ETH refunded to buyers</span><span class="stat__value" id="stat-refunded">—</span></div>
+</section>
+
+<section class="panel">
+    <div class="panel__head">
+        <div class="tabs" role="tablist" id="role-tabs">
+            <button role="tab" class="tab is-active" data-role="all">All <span class="tab__count" id="count-all">0</span></button>
+            <button role="tab" class="tab" data-role="buyer">Buying <span class="tab__count" id="count-buyer">0</span></button>
+            <button role="tab" class="tab" data-role="seller">Selling <span class="tab__count" id="count-seller">0</span></button>
+            <button role="tab" class="tab" data-role="arbiter">Arbitrating <span class="tab__count" id="count-arbiter">0</span></button>
+        </div>
+        <button class="btn btn--ghost btn--sm" type="button" id="refresh-btn">Refresh</button>
+    </div>
+    <div id="escrow-list" class="escrow-list">
+        <div class="empty">Connect MetaMask to see your escrows.</div>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

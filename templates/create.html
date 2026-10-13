@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}New escrow{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>New escrow</h1>
+        <p class="muted">You are the <strong>buyer</strong>. The ETH you enter is locked in the contract until the deal is settled.</p>
+    </div>
+</div>
+
+<div class="create-grid">
+    <form class="panel form" id="create-form" novalidate>
+        <div class="field">
+            <label for="title">What is this payment for?</label>
+            <input id="title" name="title" type="text" maxlength="64" placeholder="e.g. Used MacBook Pro 14&quot; (2021)" autocomplete="off" required>
+            <div class="field__foot"><span class="field__error" data-for="title"></span><span class="field__hint" id="title-count">0 / 64</span></div>
+        </div>
+
+        <div class="field">
+            <label for="seller">Seller wallet address</label>
+            <input id="seller" name="seller" type="text" class="mono" placeholder="0x…" autocomplete="off" spellcheck="false" required>
+            <div class="field__foot"><span class="field__error" data-for="seller"></span><span class="field__hint">Receives the ETH when you release it.</span></div>
+        </div>
+
+        <div class="field">
+            <label for="arbiter">Arbiter wallet address</label>
+            <input id="arbiter" name="arbiter" type="text" class="mono" placeholder="0x…" autocomplete="off" spellcheck="false" required>
+            <div class="field__foot"><span class="field__error" data-for="arbiter"></span><span class="field__hint">A neutral person both sides trust. Only used if there is a dispute.</span></div>
+        </div>
+
+        <div class="field-row">
+            <div class="field">
+                <label for="amount">Amount (Sepolia ETH)</label>
+                <div class="input-suffix">
+                    <input id="amount" name="amount" type="number" inputmode="decimal" min="0" step="any" placeholder="0.01" required>
+                    <span>ETH</span>
+                </div>
+                <div class="field__foot"><span class="field__error" data-for="amount"></span><span class="field__hint" id="balance-hint"></span></div>
+            </div>
+
+            <div class="field">
+                <label for="deadline">Delivery deadline</label>
+                <input id="deadline" name="deadline" type="datetime-local" required>
+                <div class="quick">
+                    <button type="button" data-add="10">+10 min</button>
+                    <button type="button" data-add="1440">+1 day</button>
+                    <button type="button" data-add="10080">+7 days</button>
+                    <button type="button" data-add="43200">+30 days</button>
+                </div>
+                <div class="field__foot"><span class="field__error" data-for="deadline"></span></div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="review">Review period</label>
+            <select id="review" name="review" class="select-full">
+                <option value="600">10 minutes (for testing)</option>
+                <option value="86400">1 day</option>
+                <option value="259200" selected>3 days</option>
+                <option value="604800">7 days</option>
+                <option value="1209600">14 days</option>
+            </select>
+            <div class="field__foot"><span class="field__error" data-for="review"></span><span class="field__hint">After delivery you have this long to release or dispute — if you stay silent, the seller can claim the payment. It is also the arbiter's time limit; if the arbiter never decides, you are refunded.</span></div>
+        </div>
+
+        <div class="form__actions">
+            <button class="btn btn--primary btn--lg" type="submit" id="submit-btn">Lock ETH in escrow</button>
+            <span class="muted small">MetaMask will ask you to confirm the amount plus a small gas fee.</span>
+        </div>
+    </form>
+
+    <aside class="panel summary">
+        <h2>Summary</h2>
+        <dl>
+            <dt>Item</dt><dd id="sum-title" class="muted">—</dd>
+            <dt>Buyer (you)</dt><dd id="sum-buyer" class="mono muted">Connect wallet</dd>
+            <dt>Seller</dt><dd id="sum-seller" class="mono muted">—</dd>
+            <dt>Arbiter</dt><dd id="sum-arbiter" class="mono muted">—</dd>
+            <dt>Deadline</dt><dd id="sum-deadline" class="muted">—</dd>
+            <dt>Review period</dt><dd id="sum-review" class="muted">—</dd>
+        </dl>
+        <div class="summary__amount"><span id="sum-amount">0</span> <small>ETH</small></div>
+        <ul class="summary__rules">
+            <li>Seller gets paid only when <strong>you</strong> release the funds (or the arbiter decides).</li>
+            <li>If the seller hasn't marked delivery by the deadline, you can reclaim everything.</li>
+            <li>After delivery you have the review period to release or dispute; if you stay silent, the seller can claim the payment.</li>
+            <li>Either side can raise a dispute; if the arbiter does not decide in time, you get your money back.</li>
+        </ul>
+    </aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/create.js') }}"></script>
+{% endblock %}

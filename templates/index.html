@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Safe payments between strangers{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero__text">
+        <p class="eyebrow">Escrow payments · Ethereum Sepolia</p>
+        <h1>Pay strangers online without trusting them first.</h1>
+        <p class="lead">
+            Buying a second-hand laptop or hiring a freelancer usually means someone has to pay first and hope.
+            TrustPay locks the payment in a smart contract until the deal is done — the seller knows the money is there,
+            the buyer knows it can't disappear.
+        </p>
+        <div class="hero__cta">
+            <a class="btn btn--primary" href="{{ url_for('create') }}">Start an escrow</a>
+            <a class="btn btn--ghost" href="{{ url_for('dashboard') }}">Open dashboard</a>
+        </div>
+    </div>
+    <div class="hero__card" aria-hidden="true">
+        <div class="mini-escrow">
+            <div class="mini-escrow__row"><span>Used MacBook Pro</span><span class="badge badge--funded">Funded</span></div>
+            <div class="mini-escrow__amount">0.25 <small>ETH</small></div>
+            <div class="mini-escrow__parties">
+                <div><small>Buyer</small><span class="mono">0x7a3f…91c2</span></div>
+                <div><small>Seller</small><span class="mono">0x2b10…e4d8</span></div>
+                <div><small>Arbiter</small><span class="mono">0xc9d4…07ab</span></div>
+            </div>
+            <div class="mini-escrow__bar"><span></span></div>
+            <small class="muted">Locked in contract · 6 days left</small>
+        </div>
+    </div>
+</section>
+
+<section class="steps">
+    <h2>How it works</h2>
+    <ol class="steps__list">
+        <li>
+            <span class="steps__num">1</span>
+            <h3>Buyer locks ETH</h3>
+            <p>The buyer creates an escrow with the seller, a neutral arbiter and a deadline. The ETH moves into the contract, not to the seller.</p>
+        </li>
+        <li>
+            <span class="steps__num">2</span>
+            <h3>Seller delivers</h3>
+            <p>The seller ships the item or finishes the work and marks the escrow as delivered on-chain.</p>
+        </li>
+        <li>
+            <span class="steps__num">3</span>
+            <h3>Buyer releases</h3>
+            <p>The buyer confirms and the contract pays the seller instantly. Every step is recorded on the blockchain.</p>
+        </li>
+    </ol>
+</section>
+
+<section class="safety">
+    <div class="safety__item">
+        <h3>No one can stall the deal</h3>
+        <p>If the seller never delivers, the buyer reclaims the funds after the deadline. If the buyer goes silent after delivery, the seller can claim payment after the review period. Nobody can lock the money forever.</p>
+    </div>
+    <div class="safety__item">
+        <h3>Disputes go to an arbiter</h3>
+        <p>Either side can freeze the escrow. Only the arbiter both parties chose can decide who gets paid — and if they never do, the buyer is refunded.</p>
+    </div>
+    <div class="safety__item">
+        <h3>Rules enforced by code</h3>
+        <p>Role checks, a strict state machine and reentrancy protection mean funds can only move the way the rules allow — exactly once.</p>
+    </div>
+</section>
+{% endblock %}

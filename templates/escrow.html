@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Escrow #{{ escrow_id }}{% endblock %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+
+<div id="escrow-root" data-escrow-id="{{ escrow_id }}">
+    <div class="empty"><span class="spinner"></span> Loading escrow #{{ escrow_id }}…</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/escrow.js') }}"></script>
+{% endblock %}

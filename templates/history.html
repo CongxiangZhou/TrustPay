@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Transaction history{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Transaction history</h1>
+        <p class="muted">Every transaction you sent through TrustPay. Statuses are checked by the server against the Sepolia blockchain; click a hash to see it on Etherscan.</p>
+    </div>
+    <div class="filters">
+        <label class="sr-only" for="filter-status">Status</label>
+        <select id="filter-status">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="failed">Failed</option>
+        </select>
+        <button class="btn btn--ghost btn--sm" type="button" id="refresh-btn">Refresh</button>
+    </div>
+</div>
+
+<section class="panel panel--flush">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Action</th>
+                    <th>Escrow</th>
+                    <th class="num">Amount</th>
+                    <th>Status</th>
+                    <th class="num">Block</th>
+                    <th class="num">Gas used</th>
+                    <th>Transaction</th>
+                </tr>
+            </thead>
+            <tbody id="history-body">
+                <tr><td colspan="8" class="empty">Connect MetaMask to see your transactions.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

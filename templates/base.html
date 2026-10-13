@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}TrustPay{% endblock %} · TrustPay Escrow</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-page="{{ page }}">
+    <header class="topbar">
+        <div class="topbar__inner">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand__mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3Z" fill="currentColor"/><path d="m8.5 12 2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                TrustPay
+            </a>
+            <nav class="nav" aria-label="Main">
+                <a href="{{ url_for('dashboard') }}" class="{{ 'is-active' if page == 'dashboard' }}">Dashboard</a>
+                <a href="{{ url_for('create') }}" class="{{ 'is-active' if page == 'create' }}">New escrow</a>
+                <a href="{{ url_for('history') }}" class="{{ 'is-active' if page == 'history' }}">History</a>
+            </nav>
+            <div class="wallet">
+                <span class="net-chip" id="net-chip" hidden></span>
+                <button class="btn btn--primary btn--sm" id="connect-btn" type="button">Connect MetaMask</button>
+                <div class="account" id="account-wrap" hidden>
+                    <button class="account-chip" id="account-chip" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="account-menu">
+                        <span class="account-chip__dot" aria-hidden="true"></span>
+                        <span id="account-address" class="mono"></span>
+                        <span id="account-balance" class="account-chip__bal"></span>
+                        <span class="account-chip__caret" aria-hidden="true">▾</span>
+                    </button>
+                    <div class="account-menu" id="account-menu" role="menu" hidden>
+                        <div class="account-menu__head">
+                            <span class="muted small">Connected wallet</span>
+                            <span class="mono account-menu__addr" id="account-full"></span>
+                        </div>
+                        <button type="button" role="menuitem" id="menu-copy">Copy address</button>
+                        <button type="button" role="menuitem" id="menu-switch">Switch account</button>
+                        <button type="button" role="menuitem" id="menu-disconnect" class="danger">Disconnect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="banners" id="banners" aria-live="polite"></div>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <span>TrustPay · Escrow payments on the Ethereum <strong>Sepolia testnet</strong></span>
+        {% if frontend_config.contractAddress %}
+        <a class="mono" href="{{ frontend_config.explorerUrl }}/address/{{ frontend_config.contractAddress }}" target="_blank" rel="noopener">Contract {{ frontend_config.contractAddress[:6] }}…{{ frontend_config.contractAddress[-4:] }}</a>
+        {% endif %}
+    </footer>
+
+    <!-- Transaction status panel (filled by app.js) -->
+    <div class="txpanel" id="txpanel" role="status" aria-live="polite" hidden></div>
+
+    <script type="application/json" id="tp-config">{{ frontend_config | tojson }}</script>
+    <script src="{{ url_for('static', filename='vendor/ethers-6.13.4.umd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
